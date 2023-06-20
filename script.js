@@ -1,26 +1,51 @@
-let inputBox = document.getElementById('input-box');
-let listContainer = document.getElementById('list-container');
+let tasks = []
+const inputEl = document.getElementById("input-el")
+const addBtn = document.getElementById("add-btn")
+const ulEl = document.getElementById("ul-el")
+const delBtn = document.getElementById("del-btn")
 
-function addTask(){
-    if(inputBox.value === ''){
-        alert("You must write something!");
-    }
-    else{
-        let li = document.createElement("li")
-        li.innerHTML = inputBox.value;
-        listContainer.appendChild(li);
-        let span = document.createElement("span");
-        span.innerHTML = "\u00d7";
-        li.appendChild(span);
-    }
-    inputBox.value = '';
+let tasksFromLocalStorage = JSON.parse(localStorage.getItem("tasks"))
+if (tasksFromLocalStorage) {
+    tasks = tasksFromLocalStorage
+    render(tasks)
 }
 
-listContainer.addEventListener('click', function(e){
+addBtn.addEventListener("click", function() {
+    tasks.push(inputEl.value)
+    
+    inputEl.value = ""
+
+    render(tasks)
+
+    localStorage.setItem("tasks", JSON.stringify(tasks))
+})
+
+
+function render(taskList) {
+    let listItems = ""
+    for (let i = 0; i < taskList.length; i++) {
+        // if (inputEl.value === "") {
+        //     alert("You must write something!")
+        // }
+        // else{
+        //     listItems += "<li>" + taskList[i] + "</li>"
+        //     console.log(listItems)
+        // }
+        listItems += "<li>" + taskList[i] + "</li>"
+    }
+    ulEl.innerHTML = listItems
+}
+
+
+
+
+ulEl.addEventListener('click', function(e){
     if(e.target.tagName === "LI"){
         e.target.classList.toggle("checked")
     }
-    else if(e.target.tagName === "SPAN") {
-        e.target.parentElement.remove();
-    }
 }, false);
+
+delBtn.addEventListener("click", function() {
+    ulEl.innerHTML = ""
+    localStorage.clear()
+})
